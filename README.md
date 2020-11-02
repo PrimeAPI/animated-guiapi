@@ -6,16 +6,17 @@ How to include the API with Maven:
 <repositories>
 	<repository>
 		<id>repo.primeapi.de</id>
-    <url>https://repo.primeapi.de/</url>
+   		<url>https://repo.primeapi.de/</url>
 	</repository>
 </repositories>
+
 <dependencies>
-    <dependency>
-        <groupId>de.primeapi</groupId>
-        <artifactId>guiapi</artifactId>
-        <version>1.0.0</version>
-        <scope>compile</scope>
-    </dependency>
+    	<dependency>
+        	<groupId>de.primeapi</groupId>
+        	<artifactId>guiapi</artifactId>
+        	<version>1.0.0</version>
+        	<scope>compile</scope>
+    	</dependency>
 </dependencies>
 ```
 
