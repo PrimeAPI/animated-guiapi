@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>guiapi</artifactId>
-    <version>1.8.8</version>
+    <version>1.16.4</version>
     <build>
         <plugins>
             <plugin>
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.8.8</version>
+            <version>1.16.4</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -20,17 +21,13 @@ public class ItemBuilder {
 
     //vars
     Material material;
-    int materialInt;
     int amount = 1;
-    short damage = 0;
-    Byte subid = 0;
     List<String> lore = new LinkedList<>();
     String name = "";
     boolean lether = false;
     Color color;
     boolean skull = false;
     String skullOwner;
-    boolean glowing = false;
     boolean unbreakeble = false;
     String skullTexture;
 
@@ -40,19 +37,7 @@ public class ItemBuilder {
         this.material = material;
     }
 
-    public ItemBuilder(Material material, Byte subid) {
-        this.material = material;
-        this.subid = subid;
-    }
 
-    public ItemBuilder(int material) {
-        this.materialInt = material;
-    }
-
-    public ItemBuilder(int material, Byte subid) {
-        this.materialInt = material;
-        this.subid = subid;
-    }
 
     public ItemBuilder setUnbreakeble(boolean unbreakeble) {
         this.unbreakeble = unbreakeble;
@@ -62,10 +47,6 @@ public class ItemBuilder {
 
     //methods
 
-    public ItemBuilder setDamage(int damage) {
-        this.damage = (short) damage;
-        return this;
-    }
 
     public ItemBuilder setLore(List<String> lore) {
         this.lore = lore;
@@ -109,25 +90,13 @@ public class ItemBuilder {
         this.skullTexture = skullTexture.getBase64();
         return this;
     }
-
-    public ItemBuilder setGlowing() {
-        glowing = true;
-        return this;
-    }
     public ItemStack build() {
         ItemStack itemStack;
-        if (this.material == null) {
-            itemStack = new ItemStack(this.materialInt, this.amount, this.damage, this.subid);
-        } else {
-            itemStack = new ItemStack(this.material, this.amount, this.damage, this.subid);
-        }
+        itemStack = new ItemStack(this.material, this.amount);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(this.name);
         itemMeta.setLore(this.lore);
-        if (glowing) {
-            itemMeta.addEnchant(new Glow(70), 1, true);
-        }
-        itemMeta.spigot().setUnbreakable(unbreakeble);
+        itemMeta.setUnbreakable(unbreakeble);
         itemStack.setItemMeta(itemMeta);
         if (this.lether) {
             LeatherArmorMeta leatherArmorMeta = (LeatherArmorMeta) itemStack.getItemMeta();

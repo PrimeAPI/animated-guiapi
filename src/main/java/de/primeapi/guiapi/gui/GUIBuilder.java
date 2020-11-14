@@ -79,7 +79,7 @@ public class GUIBuilder {
     }
 
     public GUIBuilder fillInventory() {
-        return fillInventory(new ItemBuilder(Material.STAINED_GLASS_PANE, (byte) 8).setDisplayName(" ").build());
+        return fillInventory(new ItemBuilder(Material.LIGHT_GRAY_STAINED_GLASS_PANE).setDisplayName(" ").build());
     }
 
     private GUIBuilder fillNow() {
@@ -433,7 +433,7 @@ public class GUIBuilder {
 
     //Factory
     public static AnimationConfiguration createDefaultAnimationConfiguration(){
-        return new AnimationConfiguration(GUIBuilder.Animation.STAR, 50, Sound.CLICK, Sound.LEVEL_UP);
+        return new AnimationConfiguration(GUIBuilder.Animation.STAR, 50, Sound.UI_BUTTON_CLICK, Sound.ENTITY_PLAYER_LEVELUP);
     }
 
     public static AnimationConfiguration createDefaultAnimationConfiguration(GUIBuilder.Animation animation){
@@ -441,11 +441,11 @@ public class GUIBuilder {
             case LEFT:
             case LEFT_FILLER:
             case STAR:
-                return new AnimationConfiguration(animation, 50, Sound.CLICK, Sound.LEVEL_UP);
+                return new AnimationConfiguration(animation, 50, Sound.UI_BUTTON_CLICK, Sound.ENTITY_PLAYER_LEVELUP);
             case CLOCKWISE:
-                return new AnimationConfiguration(animation, 10, Sound.CLICK, Sound.LEVEL_UP);
+                return new AnimationConfiguration(animation, 10, Sound.UI_BUTTON_CLICK, Sound.ENTITY_PLAYER_LEVELUP);
             default:
-                return new AnimationConfiguration(GUIBuilder.Animation.STAR, 50, Sound.CLICK, Sound.LEVEL_UP);
+                return new AnimationConfiguration(GUIBuilder.Animation.STAR, 50, Sound.UI_BUTTON_CLICK, Sound.ENTITY_PLAYER_LEVELUP);
         }
     }
 
