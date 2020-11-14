@@ -1,22 +1,28 @@
-package de.primeapi.guiapi;
+package de.primeapi.guiapi.gui;
 
-import de.primeapi.guiapi.itembuilder.ItemBuilder;
+import de.primeapi.guiapi.gui.itembuilder.ItemBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import javax.swing.plaf.SplitPaneUI;
+import java.util.*;
 
 public class GUIBuilder {
 
@@ -29,6 +35,7 @@ public class GUIBuilder {
     public ICloseAction closeAction;
     public Inventory inventory;
     public ItemStack filler;
+    private Listener listener;
 
 
     public GUIBuilder(@NonNull int size) {
@@ -78,7 +85,7 @@ public class GUIBuilder {
     private GUIBuilder fillNow() {
         for (int i = 0; i < size; i++) {
             if (content[i] == null) {
-                content[i] = filler;
+                addItem(i, filler, (p, itemStack) -> {});
             }
         }
         return this;
@@ -99,6 +106,12 @@ public class GUIBuilder {
         return this;
     }
 
+    public GUIBuilder addItem(int slot, ItemStack itemStack, IClickAction clickAction, IClickAction rightClickAction) {
+        items.put(itemStack, clickAction);
+        addItem(slot, itemStack);
+        return this;
+    }
+
     public GUIBuilder addItem(int slot, ItemStack itemStack) {
         content[slot] = itemStack;
         return this;
@@ -109,8 +122,7 @@ public class GUIBuilder {
         return this;
     }
 
-    public Inventory build() {
-        GUIManager.getInstance().registerGUI(this);
+    public Inventory build(Plugin plugin) {
         fillNow();
         Inventory inventory;
         if (inventoryType == null) {
@@ -120,10 +132,11 @@ public class GUIBuilder {
         }
         inventory.setContents(content);
         this.inventory = inventory;
+        register(plugin);
         return this.inventory;
     }
 
-    public void animate(Player p, AnimationConfiguration configuration) {
+    public void animate(Player p, AnimationConfiguration configuration, Plugin plugin) {
         ItemStack[] items = new ItemStack[size];
         Inventory inventory;
         if (inventoryType == null) {
@@ -324,7 +337,58 @@ public class GUIBuilder {
         thread.start();
 
 
-        GUIManager.getInstance().registerGUI(this);
+        register(plugin);
+    }
+
+    private void register(Plugin plugin){
+        this.listener = new Listener() {
+            @EventHandler
+            public void onInventoryClick(InventoryClickEvent e){
+                if(!e.getInventory().equals(inventory)){
+                    return;
+                }
+
+                e.setCancelled(true);
+
+                if(Objects.isNull(e.getCurrentItem())) return;
+                if(items.containsKey(e.getCurrentItem())){
+                    items.get(e.getCurrentItem()).onClick((Player) e.getWhoClicked(), e.getCurrentItem());
+                    return;
+                }
+                if(Objects.isNull(e.getCurrentItem().getItemMeta())) return;
+                if(Objects.isNull(e.getCurrentItem().getItemMeta().getDisplayName())) return;
+                for (ItemStack itemStack : items.keySet()){
+                    if(Objects.isNull(itemStack)) continue;
+                    if(Objects.isNull(itemStack.getItemMeta())) continue;
+                    if(Objects.isNull(itemStack.getItemMeta().getDisplayName())) continue;
+                    if(itemStack.getItemMeta().getDisplayName().equals(e.getCurrentItem().getItemMeta().getDisplayName())){
+                        items.get(itemStack).onClick((Player) e.getWhoClicked(), e.getCurrentItem());
+                        return;
+                    }
+                }
+
+
+            }
+
+            @EventHandler
+            public void onInventoryClose(InventoryCloseEvent e) {
+                if (inventory.equals(e.getInventory())) {
+                    if (e.getPlayer() instanceof Player) {
+                        if (Objects.nonNull(inventory)) {
+                            if(Objects.nonNull(closeAction)) closeAction.onClose((Player) e.getPlayer(), e.getInventory());
+                            HandlerList.unregisterAll(listener);
+                        }
+                    }
+                }
+            }
+
+        };
+
+        Bukkit.getPluginManager().registerEvents(listener, plugin);
+
+
+
+
     }
 
     private boolean isLastCollum(int i) {
@@ -365,5 +429,25 @@ public class GUIBuilder {
             return null;
         }
     }
+
+
+    //Factory
+    public static AnimationConfiguration createDefaultAnimationConfiguration(){
+        return new AnimationConfiguration(GUIBuilder.Animation.STAR, 50, Sound.CLICK, Sound.LEVEL_UP);
+    }
+
+    public static AnimationConfiguration createDefaultAnimationConfiguration(GUIBuilder.Animation animation){
+        switch (animation){
+            case LEFT:
+            case LEFT_FILLER:
+            case STAR:
+                return new AnimationConfiguration(animation, 50, Sound.CLICK, Sound.LEVEL_UP);
+            case CLOCKWISE:
+                return new AnimationConfiguration(animation, 10, Sound.CLICK, Sound.LEVEL_UP);
+            default:
+                return new AnimationConfiguration(GUIBuilder.Animation.STAR, 50, Sound.CLICK, Sound.LEVEL_UP);
+        }
+    }
+
 
 }
