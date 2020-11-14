@@ -1,4 +1,4 @@
-package de.primeapi.guiapi;
+package de.primeapi.guiapi.gui;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

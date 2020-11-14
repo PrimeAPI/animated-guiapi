@@ -1,4 +1,4 @@
-package de.primeapi.guiapi.itembuilder;
+package de.primeapi.guiapi.gui.itembuilder;
 
 
 import com.mojang.authlib.GameProfile;
@@ -102,6 +102,11 @@ public class ItemBuilder {
     public ItemBuilder setSkullTexture(String skullTexture) {
         this.skull = true;
         this.skullTexture = skullTexture;
+        return this;
+    }
+    public ItemBuilder setSkullTexture(SkullTexture skullTexture) {
+        this.skull = true;
+        this.skullTexture = skullTexture.getBase64();
         return this;
     }
 

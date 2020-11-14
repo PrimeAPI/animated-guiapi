@@ -1,4 +1,4 @@
-package de.primeapi.guiapi;
+package de.primeapi.guiapi.gui;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

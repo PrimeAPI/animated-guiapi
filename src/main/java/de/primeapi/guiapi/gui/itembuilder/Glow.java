@@ -1,4 +1,4 @@
-package de.primeapi.guiapi.itembuilder;
+package de.primeapi.guiapi.gui.itembuilder;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
