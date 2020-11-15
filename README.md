@@ -14,7 +14,7 @@ How to include the API with Maven:
     	<dependency>
         	<groupId>de.primeapi</groupId>
         	<artifactId>guiapi</artifactId>
-        	<version>1.0.0</version>
+        	<version>MC-VERSION</version>
         	<scope>compile</scope>
     	</dependency>
 </dependencies>
